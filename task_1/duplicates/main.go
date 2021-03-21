@@ -7,7 +7,7 @@ import (
 
 func isValidArray(numbers []int) bool{
 	sort.Ints(numbers)
-	for i := 0; i < len(numbers); i++{
+	for i := 1; i < len(numbers); i++{
 		index := sort.SearchInts(numbers, i)
 		if index == len(numbers) || i != numbers[index]{
 			return false
@@ -22,7 +22,7 @@ func getDuplicate(numbers []int) int {
 	}
 	var number int = 0
 	for i := 0; i < len(numbers); i++{
-		for j := 1 ; j < len(numbers); j++{
+		for j := i + 1 ; j < len(numbers); j++{
 			if numbers[i] == numbers[j] {
 				number = numbers[i]
 				return number
@@ -34,7 +34,7 @@ func getDuplicate(numbers []int) int {
 
 func main() {
 	array := []int{
-		3, 2, 5, 1, 3, 4,
+		3, 2, 5, 5, 1, 4,
 	}
 	fmt.Println(getDuplicate(array))
 }
