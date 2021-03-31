@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 func evenOrOdd(number int) string {
 	if number < 0 {
 		return "-1"
@@ -12,5 +14,5 @@ func evenOrOdd(number int) string {
 }
 
 func main() {
-	evenOrOdd(1)
+	fmt.Println(evenOrOdd(1))
 }

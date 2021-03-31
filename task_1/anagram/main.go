@@ -18,5 +18,5 @@ func isAnagram(test, original string) bool {
 }
 
 func main(){
-	isAnagram("Imad", "Dima")
+	fmt.Println(isAnagram("Imad", "Dima"))
 }

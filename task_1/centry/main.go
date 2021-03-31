@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 func centuryFromYear(year int) int {
 	if year <= 0 {
 		return -1
@@ -13,5 +15,5 @@ func centuryFromYear(year int) int {
 
 
 func main() {
-	centuryFromYear(58)
+	fmt.Println(centuryFromYear(58))
 }
