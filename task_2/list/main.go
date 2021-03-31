@@ -1,39 +1,36 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"reflect"
+)
 
 type List struct {
-	value int
+	value interface{}
 	next *List
 }
 
 type LinkedList struct {
 	head *List
+	len int
 }
 
 func main(){
 	list := LinkedList{}
-	list.Insert(1)
-	list.Insert(2)
-	list.Insert(3)
-	list.Insert(4)
-	list.Insert(5)
-	//list.Deletion()
-	list.Display()
-	//list.Delete(0)
-	//list.Display()
-	list.Search(2)
+	list.Insert('1')
+	list.Insert('2')
 	list.Sort()
 	list.Display()
 
 }
 
-func (L *LinkedList) Insert(key int)  {
+func (L *LinkedList) Insert(key interface{})  {
 	list := &List{
 		value: key,
 	}
 	list.next = L.head
 	L.head = list
+	L.len++
 }
 
 func (L *LinkedList) Search(id int)  {
@@ -44,14 +41,19 @@ func (L *LinkedList) Search(id int)  {
 		i++
 	}
 	if cur.next == nil && id != i {
-		fmt.Println("Element doesn't exist")
+		fmt.Println("Element not found")
 		return
 	}
 	fmt.Println(cur.value)
 }
 
 func (L *LinkedList) Deletion(){
+	if L.head == nil {
+		fmt.Println("Your list is empty")
+		return
+	}
 	L.head = L.head.next
+	L.len--
 }
 
 func (L *LinkedList) Delete(id int){
@@ -72,6 +74,29 @@ func (L *LinkedList) Delete(id int){
 	} else {
 		prev.next = cur.next
 	}
+	L.len--
+}
+
+func typeDefinition(i1 interface{}, i2 interface{}) bool {
+	if reflect.TypeOf(i1) != reflect.TypeOf(i2) {
+		panic("Type incompatibility (")
+	}
+	switch i1.(type) {
+	case int:
+		return i1.(int) > i2.(int)
+	case float64:
+		return i1.(float64) > i2.(float64)
+	case string:
+		return i1.(string) > i2.(string)
+	case rune:
+		return i1.(rune) > i2.(rune)
+	case uint:
+		return i1.(uint) > i2.(uint)
+	case byte:
+		return i1.(byte) > i2.(byte)
+	default:
+		panic("This type isn't supported")
+	}
 }
 
 func (L *LinkedList) Sort() {
@@ -79,7 +104,7 @@ func (L *LinkedList) Sort() {
 	for cur != nil{
 		nextElement := cur.next
 		for nextElement != nil {
-			if cur.value > nextElement.value {
+			if typeDefinition(cur.value, nextElement.value) {
 				temp := cur.value
 				cur.value = nextElement.value
 				nextElement.value = temp
