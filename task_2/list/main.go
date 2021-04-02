@@ -87,6 +87,7 @@ func (L *LinkedList) Delete(id int){
 	}
 }
 
+// getPosition gets a node by the id.
 func (L *LinkedList) getPosition(id int) *Node {
 	if id < 0 {
 		fmt.Println("Your id is incorrect\nid:", id)
