@@ -2,84 +2,116 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"reflect"
 )
 
-type List struct {
+// Node represents node of data struct linked list.
+type Node struct {
 	value interface{}
-	next *List
+	next *Node
 }
 
+// LinkedList represents the implementation of singly linked list.
 type LinkedList struct {
-	head *List
+	head *Node
 	len int
 }
 
 func main(){
 	list := LinkedList{}
-	list.Insert('1')
-	list.Insert('2')
-	list.Sort()
-	list.Display()
-
+	list.Insert(1)
+	list.Insert(2)
 }
 
+// increaseLen increases the length of the LinkedList
+func (L *LinkedList) increaseLen() {
+	L.len++
+}
+
+// decreaseLen decreases the length of the LinkedList
+func (L *LinkedList) decreaseLen() {
+	L.len--
+}
+
+// Insert Adds an element at the beginning of the list.
 func (L *LinkedList) Insert(key interface{})  {
-	list := &List{
+	list := &Node{
 		value: key,
 	}
 	list.next = L.head
 	L.head = list
-	L.len++
+	L.increaseLen()
 }
 
-func (L *LinkedList) Search(id int)  {
-	cur := L.head
-	var i int = 0
-	for cur.next != nil && id != i {
-		cur = cur.next
-		i++
-	}
-	if cur.next == nil && id != i {
+// Search Searches an element using the id.
+// If Search doesn't find an element in LinkedList or id >= length of LinkedList, then then an error message will be printed and Search will be closed
+func (L *LinkedList) Search(id int) interface{} {
+	cur := L.getPosition(id)
+	if cur == nil {
 		fmt.Println("Element not found")
-		return
+		os.Exit(1)
 	}
-	fmt.Println(cur.value)
+	return cur.value
 }
 
+// Deletion deletes an element at the beginning of the list.
+// If Length of LinkedList equals 0, then then an error message will be printed and Deletion will be closed
 func (L *LinkedList) Deletion(){
-	if L.head == nil {
+	if L.len == 0 {
 		fmt.Println("Your list is empty")
-		return
+		os.Exit(1)
 	}
 	L.head = L.head.next
-	L.len--
+	L.decreaseLen()
 }
 
+// Delete deletes an element using the id.
+// If Length of LinkedList equals 0 or if Delete, then then an error message will be printed and Delete will be closed
 func (L *LinkedList) Delete(id int){
-	prev := L.head
-	cur := L.head
-	var i int = 0
-	for cur.next != nil && id != i {
-		prev = cur
-		cur = cur.next
-		i++
+	if L.len == 0 {
+		fmt.Println("Your list is empty")
+		os.Exit(1)
 	}
-	if cur.next == nil && id != i {
-		fmt.Println("Element doesn't exist")
-		return
-	}
-	if cur == L.head {
-		L.head = L.head.next
+	if id == 0 {
+		L.Deletion()
 	} else {
-		prev.next = cur.next
+		cur := L.getPosition(id)
+		prev := L.getPosition(id - 1)
+		if cur == L.head {
+			L.head = L.head.next
+		} else {
+			prev.next = cur.next
+		}
+		L.decreaseLen()
 	}
-	L.len--
 }
 
+func (L *LinkedList) getPosition(id int) *Node {
+	if id < 0 {
+		fmt.Println("Your id is incorrect\nid:", id)
+		os.Exit(1)
+	}
+	if id >= L.len {
+		fmt.Println("Your id is greater than length of LinkedList\nid:", id)
+		os.Exit(1)
+	}
+	element := L.head
+	for i := 0; i < id; i++ {
+		element = element.next
+	}
+	return element
+}
+
+// typeDefinition compare two elements of LinkedList
+// If i1 > i2, returns true
+// If i1 < i2, returns false
+// If i1 and i2 don't equals in type, then an error message will be printed and typeDefinition will be closed
+// If type of i1 and type of i2 don't equals: int, float64, string, rune, uint and byte, then an error message will be printed and typeDefinition will be closed
 func typeDefinition(i1 interface{}, i2 interface{}) bool {
 	if reflect.TypeOf(i1) != reflect.TypeOf(i2) {
-		panic("Type incompatibility (")
+		fmt.Println("Type incompatibility (")
+		os.Exit(1)
 	}
 	switch i1.(type) {
 	case int:
@@ -95,10 +127,13 @@ func typeDefinition(i1 interface{}, i2 interface{}) bool {
 	case byte:
 		return i1.(byte) > i2.(byte)
 	default:
-		panic("This type isn't supported")
+		fmt.Println("This type isn't supported")
+		os.Exit(1)
 	}
+	return false
 }
 
+// Sort sort LinkedList using bubble sort algorithm
 func (L *LinkedList) Sort() {
 	cur := L.head
 	for cur != nil{
@@ -115,7 +150,13 @@ func (L *LinkedList) Sort() {
 	}
 }
 
+// Display displays the complete list to the console.
+// If length of LinkedList equals 0, then then an error message will be printed and Display will be closed
 func (L *LinkedList) Display()  {
+	if L.len == 0 {
+		fmt.Println("Data output isn't possible because list is empty")
+		os.Exit(1)
+	}
 	list := L.head
 	for list != nil {
 		fmt.Printf("%v ", list.value)
