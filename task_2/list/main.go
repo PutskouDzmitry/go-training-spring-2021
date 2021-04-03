@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"reflect"
@@ -22,6 +23,26 @@ func main(){
 	list := LinkedList{}
 	list.Insert(1)
 	list.Insert(2)
+	err := list.Delete(0)
+	if err != nil {
+		fmt.Println(err)
+	}
+	err1 := list.Delete(0)
+	if err1 != nil {
+		fmt.Println(err1)
+	}
+	err2 := list.Delete(0)
+	if err2 != nil {
+		fmt.Println(err2)
+	}
+	err3 := list.Deletion()
+	if err3 != nil {
+		fmt.Println(err3)
+	}
+	err4 := list.Display()
+	if err4 != nil {
+		fmt.Println(err4)
+	}
 }
 
 // increaseLen increases the length of the LinkedList
@@ -46,38 +67,45 @@ func (L *LinkedList) Insert(key interface{})  {
 
 // Search Searches an element using the id.
 // If Search doesn't find an element in LinkedList or id >= length of LinkedList, then then an error message will be printed and Search will be closed
-func (L *LinkedList) Search(id int) interface{} {
-	cur := L.getPosition(id)
-	if cur == nil {
-		fmt.Println("Element not found")
-		os.Exit(1)
+func (L *LinkedList) Search(id int) (interface{}, error) {
+	cur, errorCur := L.getPosition(id)
+	if errorCur != nil {
+		return nil, errorCur
 	}
-	return cur.value
+	if cur == nil {
+		return nil, errors.New("element not found")
+	}
+	return cur.value, nil
 }
 
 // Deletion deletes an element at the beginning of the list.
 // If Length of LinkedList equals 0, then then an error message will be printed and Deletion will be closed
-func (L *LinkedList) Deletion(){
+func (L *LinkedList) Deletion() error{
 	if L.len == 0 {
-		fmt.Println("Your list is empty")
-		os.Exit(1)
+		return errors.New("element not found")
 	}
 	L.head = L.head.next
 	L.decreaseLen()
+	return nil
 }
 
 // Delete deletes an element using the id.
 // If Length of LinkedList equals 0 or if Delete, then then an error message will be printed and Delete will be closed
-func (L *LinkedList) Delete(id int){
+func (L *LinkedList) Delete(id int) error{
 	if L.len == 0 {
-		fmt.Println("Your list is empty")
-		os.Exit(1)
+		return errors.New("your list is empty")
 	}
 	if id == 0 {
-		L.Deletion()
+		return L.Deletion()
 	} else {
-		cur := L.getPosition(id)
-		prev := L.getPosition(id - 1)
+		cur, errorCur := L.getPosition(id)
+		if errorCur != nil {
+			return errorCur
+		}
+		prev, errorPrev := L.getPosition(id - 1)
+		if errorPrev != nil {
+			return errorPrev
+		}
 		if cur == L.head {
 			L.head = L.head.next
 		} else {
@@ -85,23 +113,22 @@ func (L *LinkedList) Delete(id int){
 		}
 		L.decreaseLen()
 	}
+	return nil
 }
 
 // getPosition gets a node by the id.
-func (L *LinkedList) getPosition(id int) *Node {
+func (L *LinkedList) getPosition(id int) (*Node, error) {
 	if id < 0 {
-		fmt.Println("Your id is incorrect\nid:", id)
-		os.Exit(1)
+		return nil, fmt.Errorf("Your id is incorrect\nid: %v", id)
 	}
 	if id >= L.len {
-		fmt.Println("Your id is greater than length of LinkedList\nid:", id)
-		os.Exit(1)
+		return nil, fmt.Errorf("Your id is greater than length of LinkedList\nid: %v", id)
 	}
 	element := L.head
 	for i := 0; i < id; i++ {
 		element = element.next
 	}
-	return element
+	return element, nil
 }
 
 // typeDefinition compare two elements of LinkedList
@@ -153,10 +180,9 @@ func (L *LinkedList) Sort() {
 
 // Display displays the complete list to the console.
 // If length of LinkedList equals 0, then then an error message will be printed and Display will be closed
-func (L *LinkedList) Display()  {
+func (L *LinkedList) Display() error {
 	if L.len == 0 {
-		fmt.Println("Data output isn't possible because list is empty")
-		os.Exit(1)
+		return errors.New("data output isn't possible because list is empty")
 	}
 	list := L.head
 	for list != nil {
@@ -164,4 +190,5 @@ func (L *LinkedList) Display()  {
 		list = list.next
 	}
 	fmt.Println()
+	return nil
 }

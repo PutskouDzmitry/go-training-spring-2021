@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"reflect"
@@ -26,8 +27,19 @@ func main() {
 	}
 	queue.IsEmpty()
 	queue.IsFull()
-	queue.Enqueue(412)
-	queue.Dequeue()
+	err := queue.Enqueue(2)
+	if err != nil {
+		fmt.Println(err)
+	}
+	err = queue.Enqueue(1)
+	if err != nil {
+		fmt.Println(err)
+	}
+	element, err2 := queue.Peek()
+	if err2 != nil {
+		fmt.Println(err2)
+	}
+	fmt.Println(element)
 }
 
 // typeDefinition compare two elements of Queue
@@ -88,20 +100,18 @@ func (Q *Queue) IsEmpty() bool {
 }
 // Peek gets the value of the front of the queue without removing it
 // if queue is empty, then an error message will be printed and Peek will be closed
-func (Q *Queue) Peek() interface{} {
+func (Q *Queue) Peek() (interface{}, error) {
 	if Q.IsEmpty() {
-		fmt.Println("Queue is empty. You can't display element :(")
-		os.Exit(1)
+		return nil, errors.New("queue is empty. You can't display element :(")
 	}
-	return Q.head.value
+	return Q.head.value, nil
 }
 
 // Enqueue adds an element to the end of the queue
 // if queue is full, then an error message will be printed and Enqueue will be closed
-func (Q *Queue) Enqueue(value interface{})  {
+func (Q *Queue) Enqueue(value interface{}) error {
 	if Q.IsFull() {
-		fmt.Println("Queue is full. You can't add element in your queue(")
-		os.Exit(1)
+		return errors.New("queue is full. You can't add element in your queue(")
 	}
 	element := &Node {
 		value: value,
@@ -114,14 +124,14 @@ func (Q *Queue) Enqueue(value interface{})  {
 		Q.tail = element
 	}
 	Q.size++
+	return nil
 }
 
 // Dequeue is removes an element from the front of the queue
 // if element in Queue equals nil, then an error message will be printed and Dequeue will be closed
-func (Q *Queue) Dequeue()  {
+func (Q *Queue) Dequeue() error {
 	if Q.head == nil {
-		fmt.Println("Your queue is empty and impossible delete element")
-		os.Exit(1)
+		return errors.New("your queue is empty and impossible delete element")
 	}
 	element := Node {}
 	element.value = Q.head.value
@@ -132,6 +142,7 @@ func (Q *Queue) Dequeue()  {
 		Q.tail = nil
 	}
 	Q.size--
+	return nil
 }
 
 
