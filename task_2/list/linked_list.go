@@ -1,4 +1,4 @@
-package main
+package linked_list
 
 import (
 	"errors"
@@ -9,40 +9,29 @@ import (
 
 // Node represents node of data struct linked list.
 type Node struct {
-	value interface{}
-	next *Node
+	value interface{} // an value that is in the node
+	next *Node // pointer to the next node
 }
 
 // LinkedList represents the implementation of singly linked list.
 type LinkedList struct {
-	head *Node
-	len int
+	head *Node // the head of the list
+	len int // the Len of the list
 }
 
-func main(){
-	list := LinkedList{}
-	list.Insert(1)
-	list.Insert(2)
-	err := list.Delete(0)
-	if err != nil {
-		fmt.Println(err)
+
+// GetLen get len of LinkedList
+func (L LinkedList) GetLen() int {
+	return L.len
+}
+
+// NewLinkedList create an empty LinkedList
+func NewLinkedList(values ...interface{}) *LinkedList {
+	list := &LinkedList{}
+	for _, value := range values {
+		list.Insert(value)
 	}
-	err1 := list.Delete(0)
-	if err1 != nil {
-		fmt.Println(err1)
-	}
-	err2 := list.Delete(0)
-	if err2 != nil {
-		fmt.Println(err2)
-	}
-	err3 := list.Deletion()
-	if err3 != nil {
-		fmt.Println(err3)
-	}
-	err4 := list.Display()
-	if err4 != nil {
-		fmt.Println(err4)
-	}
+	return list
 }
 
 // increaseLen increases the length of the LinkedList
@@ -68,7 +57,7 @@ func (L *LinkedList) Insert(key interface{})  {
 // Search Searches an element using the id.
 // If Search doesn't find an element in LinkedList or id >= length of LinkedList, then then an error message will be printed and Search will be closed
 func (L *LinkedList) Search(id int) (interface{}, error) {
-	cur, errorCur := L.getPosition(id)
+	cur, errorCur := L.GetPosition(id)
 	if errorCur != nil {
 		return nil, errorCur
 	}
@@ -82,7 +71,7 @@ func (L *LinkedList) Search(id int) (interface{}, error) {
 // If Length of LinkedList equals 0, then then an error message will be printed and Deletion will be closed
 func (L *LinkedList) Deletion() error{
 	if L.len == 0 {
-		return errors.New("element not found")
+		return errors.New("the list is empty")
 	}
 	L.head = L.head.next
 	L.decreaseLen()
@@ -98,11 +87,11 @@ func (L *LinkedList) Delete(id int) error{
 	if id == 0 {
 		return L.Deletion()
 	} else {
-		cur, errorCur := L.getPosition(id)
+		cur, errorCur := L.GetPosition(id)
 		if errorCur != nil {
 			return errorCur
 		}
-		prev, errorPrev := L.getPosition(id - 1)
+		prev, errorPrev := L.GetPosition(id - 1)
 		if errorPrev != nil {
 			return errorPrev
 		}
@@ -117,12 +106,12 @@ func (L *LinkedList) Delete(id int) error{
 }
 
 // getPosition gets a node by the id.
-func (L *LinkedList) getPosition(id int) (*Node, error) {
+func (L *LinkedList) GetPosition(id int) (*Node, error) {
 	if id < 0 {
-		return nil, fmt.Errorf("Your id is incorrect\nid: %v", id)
+		return nil, fmt.Errorf("your id is incorrect id: %v", id)
 	}
 	if id >= L.len {
-		return nil, fmt.Errorf("Your id is greater than length of LinkedList\nid: %v", id)
+		return nil, fmt.Errorf("your id is greater than length of LinkedList id: %v", id)
 	}
 	element := L.head
 	for i := 0; i < id; i++ {
@@ -138,7 +127,7 @@ func (L *LinkedList) getPosition(id int) (*Node, error) {
 // If type of i1 and type of i2 don't equals: int, float64, string, rune, uint and byte, then an error message will be printed and typeDefinition will be closed
 func typeDefinition(i1 interface{}, i2 interface{}) bool {
 	if reflect.TypeOf(i1) != reflect.TypeOf(i2) {
-		fmt.Println("Type incompatibility (")
+		fmt.Println("type incompatibility (")
 		os.Exit(1)
 	}
 	switch i1.(type) {

@@ -1,4 +1,4 @@
-package main
+package queue
 
 import (
 	"errors"
@@ -9,37 +9,24 @@ import (
 
 // Node represents node of data struct queue.
 type Node  struct {
-	value interface{}
-	next *Node
+	value interface{} // an value that is in the node
+	next *Node // pointer to the next node
 }
 
 // Queue represents the implementation of queue.
 type Queue struct {
-	head *Node
-	tail *Node
-	size int
-	maxSize int
+	head *Node // the head of the queue
+	tail *Node // the tail of the queue
+	size int  // the size of the queue
+	capacity int // the max capacity of the queue
 }
 
-func main() {
-	queue := Queue{
-		maxSize: 2,
-	}
-	queue.IsEmpty()
-	queue.IsFull()
-	err := queue.Enqueue(2)
-	if err != nil {
-		fmt.Println(err)
-	}
-	err = queue.Enqueue(1)
-	if err != nil {
-		fmt.Println(err)
-	}
-	element, err2 := queue.Peek()
-	if err2 != nil {
-		fmt.Println(err2)
-	}
-	fmt.Println(element)
+func (Q *Queue) GetSize () int {
+	return Q.size
+}
+
+func NewQueue(max int) *Queue {
+	return &Queue{capacity : max}
 }
 
 // typeDefinition compare two elements of Queue
@@ -91,7 +78,7 @@ func (Q *Queue) Sort() {
 
 // IsFull checks if the queue is full
 func (Q *Queue) IsFull() bool {
-	return Q.maxSize <= Q.size
+	return Q.capacity <= Q.size
 }
 
 // IsEmpty checks if the queue is empty
