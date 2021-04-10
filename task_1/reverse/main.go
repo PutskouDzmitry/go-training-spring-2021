@@ -1,14 +1,20 @@
 package main
 
-/**
- * Description: Complete the solution so that it reverses the string passed into it.
- * Example: "world"  =>  "dlrow"
- */
+import (
+	"fmt"
+)
 
 func reverse(word string) string {
-	panic("Implement me!")
+	if len(word) == 0 {
+		return "-1"
+	}
+	array := []rune(word)
+	for i, lastIndex := 0, len(array) - 1; i < lastIndex; i, lastIndex = i + 1, lastIndex - 1{
+		array[i], array[lastIndex] = array[lastIndex], array[i]
+	}
+	return string(array)
 }
 
 func main() {
-
+	fmt.Println(reverse("Dima"))
 }
