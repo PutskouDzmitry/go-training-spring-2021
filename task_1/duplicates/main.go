@@ -33,8 +33,6 @@ func getDuplicate(numbers []int) int {
 }
 
 func main() {
-	array := []int{
-		3, 2, 5, 5, 1, 4,
-	}
+	array := []int{ 3, 2, 5, 1, 3, 4 }
 	fmt.Println(getDuplicate(array))
 }

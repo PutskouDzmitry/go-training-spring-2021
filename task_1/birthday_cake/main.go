@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 func cake(x int, y string) string {
 	if x > 1000 {
 		return "-1"
@@ -14,7 +16,7 @@ func cake(x int, y string) string {
 		}
 	}
 	coeff := 0.7
-	if float64(x) < float64(x) * coeff {
+	if float64(result) > float64(x) * coeff {
 		return "Fire!!!"
 	} else {
 		return "That was close!"

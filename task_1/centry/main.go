@@ -9,9 +9,6 @@ func centuryFromYear(year int) int {
 	}
 	return year / 100
 
-}
-
-
 func main() {
 	centuryFromYear(58)
 }

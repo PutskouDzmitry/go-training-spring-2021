@@ -1,21 +1,16 @@
 package main
 
-import (
-	"fmt"
-	"strings"
-)
-
 func reverse(word string) string {
-	if len(word) == 0{
+	if len(word) == 0 {
 		return "-1"
 	}
-	var array []string = strings.Split(word, "")
+	array := []rune(word)
 	for i, lastIndex := 0, len(array) - 1; i < lastIndex; i, lastIndex = i + 1, lastIndex - 1{
 		array[i], array[lastIndex] = array[lastIndex], array[i]
 	}
-	return fmt.Sprint(array)
+	return string(array)
 }
 
 func main() {
-	reverse("Dima")
+	fmt.Println(reverse("Dima"))
 }
