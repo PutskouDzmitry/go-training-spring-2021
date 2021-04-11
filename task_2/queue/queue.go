@@ -3,7 +3,6 @@ package queue
 import (
 	"errors"
 	"fmt"
-	"os"
 	"reflect"
 )
 
@@ -34,38 +33,35 @@ func NewQueue(max int) *Queue {
 // If i1 < i2, returns false
 // If i1 and i2 don't equals in type, then an error message will be printed and typeDefinition will be closed
 // If type of i1 and type of i2 don't equals: int, float64, string, rune, uint and byte, then an error message will be printed and typeDefinition will be closed
-func typeDefinition(i1 interface{}, i2 interface{}) bool {
-	if reflect.TypeOf(i1) != reflect.TypeOf(i2) {
-		fmt.Println("Type incompatibility (")
-		os.Exit(1)
-	}
+func typeDefinition(i1 interface{}, i2 interface{}) (bool, error) {
 	switch i1.(type) {
 	case int:
-		return i1.(int) > i2.(int)
+		return i1.(int) > i2.(int), nil
 	case float64:
-		return i1.(float64) > i2.(float64)
+		return i1.(int) > i2.(int), nil
 	case string:
-		return i1.(string) > i2.(string)
+		return i1.(int) > i2.(int), nil
 	case rune:
-		return i1.(rune) > i2.(rune)
+		return i1.(int) > i2.(int), nil
 	case uint:
-		return i1.(uint) > i2.(uint)
+		return i1.(int) > i2.(int), nil
 	case byte:
-		return i1.(byte) > i2.(byte)
+		return i1.(int) > i2.(int), nil
 	default:
-		fmt.Println("This type isn't supported")
-		os.Exit(1)
+		return false, fmt.Errorf("this type isn't supported: %v", reflect.TypeOf(i1))
 	}
-	return false
 }
 
 // Sort sort Queue using bubble sort algorithm
-func (Q *Queue) Sort() {
+func (Q *Queue) Sort() error {
 	cur := Q.head
 	for cur != nil{
 		nextElement := cur.next
 		for nextElement != nil {
-			if typeDefinition(cur.value, nextElement.value) {
+			if t, err := typeDefinition(cur.value, nextElement.value); t {
+				if err != nil {
+					return err
+				}
 				temp := cur.value
 				cur.value = nextElement.value
 				nextElement.value = temp
@@ -74,6 +70,7 @@ func (Q *Queue) Sort() {
 		}
 		cur = cur.next
 	}
+	return nil
 }
 
 // IsFull checks if the queue is full

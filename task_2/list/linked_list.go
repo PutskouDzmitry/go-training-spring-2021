@@ -3,7 +3,6 @@ package linked_list
 import (
 	"errors"
 	"fmt"
-	"os"
 	"reflect"
 )
 
@@ -26,12 +25,15 @@ func (L LinkedList) GetLen() int {
 }
 
 // NewLinkedList create an empty LinkedList
-func NewLinkedList(values ...interface{}) *LinkedList {
+func NewLinkedList(values ...interface{}) (*LinkedList, error) {
 	list := &LinkedList{}
 	for _, value := range values {
-		list.Insert(value)
+		err := list.Insert(value)
+		if err != nil {
+			return nil, err
+		}
 	}
-	return list
+	return list, nil
 }
 
 // increaseLen increases the length of the LinkedList
@@ -45,13 +47,19 @@ func (L *LinkedList) decreaseLen() {
 }
 
 // Insert Adds an element at the beginning of the list.
-func (L *LinkedList) Insert(key interface{})  {
+func (L *LinkedList) Insert(key interface{}) error {
+	if L.head != nil {
+		if reflect.TypeOf(L.head.value) != reflect.TypeOf(key) {
+			return fmt.Errorf("type incompatibility %v and %v", reflect.TypeOf(L.head.value), reflect.TypeOf(key))
+		}
+	}
 	list := &Node{
 		value: key,
 	}
 	list.next = L.head
 	L.head = list
 	L.increaseLen()
+	return nil
 }
 
 // Search Searches an element using the id.
@@ -125,38 +133,35 @@ func (L *LinkedList) GetPosition(id int) (*Node, error) {
 // If i1 < i2, returns false
 // If i1 and i2 don't equals in type, then an error message will be printed and typeDefinition will be closed
 // If type of i1 and type of i2 don't equals: int, float64, string, rune, uint and byte, then an error message will be printed and typeDefinition will be closed
-func typeDefinition(i1 interface{}, i2 interface{}) bool {
-	if reflect.TypeOf(i1) != reflect.TypeOf(i2) {
-		fmt.Println("type incompatibility (")
-		os.Exit(1)
-	}
+func typeDefinition(i1 interface{}, i2 interface{}) (bool, error) {
 	switch i1.(type) {
 	case int:
-		return i1.(int) > i2.(int)
+		return i1.(int) > i2.(int), nil
 	case float64:
-		return i1.(float64) > i2.(float64)
+		return i1.(float64) > i2.(float64), nil
 	case string:
-		return i1.(string) > i2.(string)
+		return i1.(string) > i2.(string), nil
 	case rune:
-		return i1.(rune) > i2.(rune)
+		return i1.(rune) > i2.(rune), nil
 	case uint:
-		return i1.(uint) > i2.(uint)
+		return i1.(uint) > i2.(uint), nil
 	case byte:
-		return i1.(byte) > i2.(byte)
+		return i1.(byte) > i2.(byte), nil
 	default:
-		fmt.Println("This type isn't supported")
-		os.Exit(1)
+		return false, fmt.Errorf("this type isn't supported: %v", reflect.TypeOf(i1))
 	}
-	return false
 }
 
 // Sort sort LinkedList using bubble sort algorithm
-func (L *LinkedList) Sort() {
+func (L *LinkedList) Sort() error{
 	cur := L.head
 	for cur != nil{
 		nextElement := cur.next
 		for nextElement != nil {
-			if typeDefinition(cur.value, nextElement.value) {
+			if t, err := typeDefinition(cur.value, nextElement.value); t {
+				if err != nil {
+					return err
+				}
 				temp := cur.value
 				cur.value = nextElement.value
 				nextElement.value = temp
@@ -165,6 +170,7 @@ func (L *LinkedList) Sort() {
 		}
 		cur = cur.next
 	}
+	return nil
 }
 
 // Display displays the complete list to the console.
