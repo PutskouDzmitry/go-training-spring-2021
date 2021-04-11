@@ -21,8 +21,7 @@ func cake(x int, y string) string {
 	} else {
 		return "That was close!"
 	}
-}
 
 func main() {
-	fmt.Println(cake(500, "abc"))
+	cake(600, "adc")
 }

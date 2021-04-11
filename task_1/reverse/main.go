@@ -1,9 +1,5 @@
 package main
 
-import (
-	"fmt"
-)
-
 func reverse(word string) string {
 	if len(word) == 0 {
 		return "-1"
